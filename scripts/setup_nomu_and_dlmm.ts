@@ -39,7 +39,7 @@ const SUPPLY_RAW = 1_000_000_000n * POW6       // 1B NOMU
 const USDC_SUPPLY_RAW = 1_000_000_000n * POW6  // 1B USDC_MOCK
 
 // montants à ENVOYER à ton wallet perso (en unités "entières" de token, pas lamports)
-const FUND_NOMU = 5_000_000n * POW6   // 5,000,000 NOMU
+const FUND_NOMU = 50_000_000n * POW6   // 5,000,000 NOMU
 const FUND_USDC = 100_000n * POW6     // 100,000 USDC_MOCK
 
 const INITIAL_PRICE = 0.0015 // 1 NOMU = 0.0015 USDC
@@ -191,7 +191,7 @@ async function main() {
       initialPrice: INITIAL_PRICE,
       activationType: 'timestamp',
       activationPoint,
-      priceRounding: 'down',
+      priceRounding: 'up',
       hasAlphaVault: false,
       creatorPoolOnOffControl: false,
     },
@@ -209,12 +209,12 @@ async function main() {
       initialPrice: INITIAL_PRICE,
       activationType: 'timestamp',
       activationPoint,
-      priceRounding: 'down',
+      priceRounding: 'up',
       hasAlphaVault: false,
     },
     singleBinSeedLiquidity: {
       price: INITIAL_PRICE,
-      priceRounding: 'down',
+      priceRounding: 'up',
       seedAmount: SEED_AMOUNT_NOMU,
       basePositionKeypairFilepath: './keypair.json',
       operatorKeypairFilepath: './keypair.json',
