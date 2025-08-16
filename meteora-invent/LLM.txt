@@ -1,0 +1,282 @@
+# LLM.txt - Meteora Invent Repository
+
+**AI-Optimized Monorepo for Solana DeFi Operations**
+
+## 🎯 Quick AI Context
+
+Meteora Invent is a comprehensive monorepo providing:
+- **Automated Scripts**: Config-driven protocol interactions
+- **Production Templates**: Ready-to-deploy frontend scaffolds  
+- **Shared Libraries**: Reusable configurations and utilities
+
+**AI Navigation**: Follow the hierarchical LLM.txt structure → Each directory contains specific AI guidance
+
+## 📊 Repository Architecture
+
+### **Core Workspaces**
+- **`studio/`** → **Backend Operations**: Protocol scripts, config-driven automation
+- **`scaffolds/`** → **Frontend Templates**: Production-ready UI applications  
+- **`packages/`** → **Shared Code**: Configurations, utilities, TypeScript settings
+
+### **AI-Friendly Design**
+- ✅ **Hierarchical LLM.txt**: Detailed guidance at every level
+- ✅ **Config-Driven**: All parameters externalized to JSON files
+- ✅ **Safe Execution**: Built-in dry-run and validation modes
+- ✅ **Clear Boundaries**: Explicit files AI can/cannot modify
+
+## 🚀 Global Setup & Prerequisites
+
+### **System Requirements**
+- **Node.js** >= 18.0.0
+- **pnpm** >= 9.0.0 (package manager)
+- **Solana wallet** with SOL balance
+- **RPC endpoint** (recommended: Helius, QuickNode)
+
+### **Initial Repository Setup**
+```bash
+# 1. Clone repository
+git clone https://github.com/MeteoraAg/meteora-invent.git
+cd meteora-invent
+
+# 2. Install all dependencies (handles workspaces)
+pnpm install
+
+# 3. Build all packages (creates shared libraries)
+pnpm build
+
+# 4. Validate environment (optional but recommended)
+pnpm validate-env
+```
+
+### **Environment Configuration Pattern**
+Each workspace follows this pattern:
+```bash
+# Navigate to workspace
+cd studio/  # or scaffolds/fun-launch/, etc.
+
+# Copy environment template
+cp .env.example .env
+
+# Edit with your settings
+# - RPC_URL=your_rpc_endpoint
+# - PAYER_PRIVATE_KEY=your_wallet_private_key
+# - Other workspace-specific variables
+```
+
+## 🗺️ AI Navigation Map
+
+### **🎯 Task-Based Navigation**
+
+| **Goal** | **Navigate To** | **Purpose** |
+|----------|----------------|-------------|
+| Launch new token | `studio/LLM.txt` → DBC section | Token deployment with bonding curve |
+| Create AMM pools | `studio/LLM.txt` → DAMM V2 section | Liquidity pool creation |
+| Concentrated liquidity | `studio/LLM.txt` → DLMM section | Advanced position management |
+| Build trading UI | `scaffolds/fun-launch/LLM.txt` | Complete frontend application |
+| Migrate DBC→AMM | `studio/LLM.txt` → Migration workflows | Pool graduation process |
+| Configure shared tools | `packages/LLM.txt` | ESLint, TypeScript, utilities |
+
+### **🔄 Protocol Decision Tree**
+
+**New Token Launch**
+```
+Is this a new token? 
+├─ Yes → Start with DBC (studio/LLM.txt)
+│  ├─ Need fair launch? → DBC with bonding curve
+│  └─ Ready for AMM? → Migrate DBC → DAMM V2
+└─ No → Existing token pools
+   ├─ Standard AMM → DAMM V2 (studio/LLM.txt)  
+   ├─ Yield farming → DAMM V1 (studio/LLM.txt)
+   └─ Advanced LP → DLMM (studio/LLM.txt)
+```
+
+### **⚡ Quick Command Reference**
+
+| **Operation** | **Command** | **Details** |
+|---------------|-------------|-------------|
+| Studio scripts | `pnpm studio [script-name]` | All protocol operations |
+| Frontend dev | `pnpm scaffold dev` | Run all scaffold dev servers |
+| Type checking | `pnpm type-check` | Validate TypeScript across repo |
+| Linting | `pnpm lint` | Check all workspaces |
+| Build all | `pnpm build` | Compile all packages |
+| Clean all | `pnpm clean` | Remove artifacts and node_modules |
+
+## 📁 Hierarchical Repository Structure
+
+```
+meteora-invent/
+├── 📄 LLM.txt                     # THIS FILE - Repository navigation & setup
+├── 📄 package.json                # Root scripts & workspace configuration
+├── 📄 turbo.json                  # Build system configuration
+├── 📄 pnpm-workspace.yaml         # Workspace definitions
+│
+├── 🏗️ studio/                     # BACKEND - Protocol automation scripts
+│   ├── 📄 LLM.txt                 # ⭐ STUDIO MASTER GUIDE (updated & comprehensive)
+│   ├── 📄 package.json            # Studio-specific scripts (pnpm studio ...)
+│   ├── 📁 config/                 # ⚙️ Configuration files (AI modifies these)
+│   │   ├── dbc_config.jsonc       # Dynamic Bonding Curve settings
+│   │   ├── damm_v1_config.jsonc   # DAMM V1 pool settings
+│   │   ├── damm_v2_config.jsonc   # DAMM V2 pool settings
+│   │   └── dlmm_config.jsonc      # DLMM pool settings
+│   ├── 📁 src/                    # 🔒 Source code (AI never modifies)
+│   │   ├── scripts/               # Executable protocol scripts
+│   │   ├── lib/                   # Protocol-specific libraries
+│   │   ├── helpers/               # Utility functions
+│   │   └── utils/                 # Types and constants
+│   ├── 📄 .env                    # Environment variables (create from .env.example)
+│   └── 📄 keypair.json            # Generated wallet file
+│
+├── 🎨 scaffolds/                  # FRONTEND - Production-ready templates
+│   ├── 📄 LLM.txt                 # Scaffold overview & usage guide
+│   └── 📁 fun-launch/             # Token launchpad template
+│       ├── 📄 LLM.txt             # ⭐ DETAILED FRONTEND GUIDE
+│       ├── 📄 package.json        # Next.js application scripts
+│       ├── 📁 src/                # React components & pages
+│       ├── 📄 .env.example        # Frontend environment template
+│       └── 📄 next.config.ts      # Next.js configuration
+│
+└── 📦 packages/                   # SHARED - Reusable configurations
+    ├── 📄 LLM.txt                 # Shared packages guide
+    ├── 📁 config/                 # Shared configurations
+    │   ├── eslint/                # ESLint configurations
+    │   ├── prettier/              # Prettier configurations
+    │   └── typescript/            # TypeScript configurations
+    └── 📁 shared/                 # Shared utilities
+        └── utils/                 # Common utility functions
+```
+
+## 🔄 Complete Workflow Examples
+
+### **1. Token Launch to Trading (Full Stack)**
+```bash
+# Step 1: Launch token with bonding curve (Backend)
+cd studio/
+cp .env.example .env  # Configure wallet & RPC
+pnpm studio dbc-create-pool --config ./config/dbc_config.jsonc
+
+# Step 2: Build trading interface (Frontend)  
+cd ../scaffolds/fun-launch/
+cp .env.example .env  # Configure API endpoints
+pnpm install && pnpm dev
+
+# Step 3: Monitor & migrate when ready (Backend)
+cd ../../studio/
+pnpm studio dbc-migrate-to-damm-v2 --config ./config/dbc_config.jsonc
+```
+
+### **2. AMM Pool Creation Workflow**
+```bash
+# Navigate to studio workspace
+cd studio/
+
+# Configure pool parameters
+# Edit studio/config/damm_v2_config.jsonc with:
+# - tokenMintA: "TOKEN_A_MINT_ADDRESS"
+# - tokenMintB: "TOKEN_B_MINT_ADDRESS" 
+# - feeBps: 30
+
+# Create pool
+pnpm studio damm-v2-create-balanced-pool --config ./config/damm_v2_config.jsonc
+
+# Verify on explorer using returned pool address
+```
+
+### **3. Frontend Development Workflow**
+```bash
+# Copy scaffold to new project
+cp -r scaffolds/fun-launch /path/to/your-project
+cd /path/to/your-project
+
+# Setup environment
+cp .env.example .env
+# Edit .env with:
+# - NEXT_PUBLIC_RPC_URL=your_rpc_endpoint
+# - NEXT_PUBLIC_NETWORK=mainnet-beta
+
+# Install & develop
+pnpm install
+pnpm dev  # Runs on http://localhost:3000
+```
+
+## 🛡️ AI Safety & Security Guidelines
+
+### **Critical Rules for AI**
+1. ✅ **Always Read LLM.txt First**: Each directory contains specific guidance
+2. ✅ **Use Dry-Run Mode**: Set `"dryRun": true` in configs for testing
+3. ✅ **Validate Before Execute**: Run validation commands before operations
+4. ✅ **Test on Devnet**: Never start with mainnet for new configurations
+5. ✅ **Follow File Permissions**: Only modify files in designated directories
+
+### **Files AI Can Modify**
+- `studio/config/*.jsonc` - Protocol configurations
+- `scaffolds/*/.*env*` - Environment configurations  
+- `scaffolds/*/src/**` - Frontend source code (when building UIs)
+
+### **Files AI Must NEVER Modify**
+- `studio/src/**` - Protocol logic and scripts
+- `**/package.json` - Dependencies and scripts (unless explicitly requested)
+- `**/node_modules/**` - Generated dependencies
+- `**/.git/**` - Git repository data
+
+### **Environment Security**
+```bash
+# ✅ GOOD - Use environment variables
+PAYER_PRIVATE_KEY=your_private_key_in_base58_format
+RPC_URL=https://your-rpc-endpoint.com
+
+# ❌ BAD - Never hardcode in source
+const privateKey = "actual_private_key_here"  // NEVER DO THIS
+```
+
+## 🌍 Network Configuration Guide
+
+### **Network Selection by Use Case**
+
+| **Network** | **Purpose** | **Cost** | **Setup** |
+|-------------|-------------|----------|-----------|
+| **Localnet** | Development & Testing | Free | `pnpm studio start-test-validator` |
+| **Devnet** | Integration Testing | Free (faucet) | Set `rpcUrl: "https://api.devnet.solana.com"` |
+| **Mainnet** | Production | Real SOL | Set `rpcUrl: "https://api.mainnet-beta.solana.com"` |
+
+### **RPC Endpoint Recommendations**
+- **Development**: Public RPC (free, rate-limited)
+- **Production**: Private RPC (Helius, QuickNode, Alchemy)
+- **High Volume**: Dedicated RPC with higher rate limits
+
+## 🎯 Next Steps for AI
+
+### **New to Repository?**
+1. **Start Here**: `studio/LLM.txt` - Comprehensive studio guide
+2. **Frontend Needs**: `scaffolds/fun-launch/LLM.txt` - UI development
+3. **Configuration**: `packages/LLM.txt` - Shared tools setup
+
+### **Task-Specific Entry Points**
+- **Token Operations**: Always start with `studio/LLM.txt`
+- **UI Development**: Navigate to `scaffolds/LLM.txt` first
+- **Tool Configuration**: Check `packages/LLM.txt` for shared configs
+
+### **For Advanced Users**
+- **Custom Scripts**: Extend existing scripts in `studio/src/scripts/`
+- **New Scaffolds**: Create based on `scaffolds/fun-launch/` pattern
+- **Shared Libraries**: Contribute to `packages/shared/utils/`
+
+## 📚 Support & Resources
+
+### **Documentation**
+- **Meteora Docs**: https://docs.meteora.ag - Protocol documentation
+- **Solana Docs**: https://docs.solana.com - Blockchain fundamentals
+- **Next.js Docs**: https://nextjs.org/docs - Frontend framework
+
+### **Tools & Explorers**
+- **Solana Explorer**: https://explorer.solana.com - Transaction verification
+- **Jupiter**: https://jup.ag - Token swaps and aggregation
+- **DexScreener**: https://dexscreener.com/solana - Pool analytics
+
+### **Development Tools**
+- **Solana CLI**: Command-line tools for Solana
+- **Anchor**: Framework for Solana program development
+- **TypeScript**: Type-safe development
+
+---
+
+**🎯 Remember**: This is a hierarchical system - each LLM.txt provides progressively more detailed guidance as you navigate deeper into specific workspaces. Always start with the LLM.txt in your target directory!

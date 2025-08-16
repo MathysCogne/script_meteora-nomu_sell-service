@@ -1,0 +1,71 @@
+import { Connection, PublicKey } from '@solana/web3.js';
+import { Wallet } from '@coral-xyz/anchor';
+import { DammV2Config, AlphaVaultConfig } from '../../utils/types';
+import { DEFAULT_COMMITMENT_LEVEL } from '../../utils/constants';
+import { createTokenMint, parseConfigFromCli, safeParseKeypairFromFile } from '../../helpers';
+import { createDammV2OneSidedPool } from '../../lib/damm_v2';
+import { createAlphaVault } from '../../lib/alpha_vault';
+import { deriveCustomizablePoolAddress } from '@meteora-ag/cp-amm-sdk';
+
+async function main() {
+  const config: DammV2Config = (await parseConfigFromCli()) as DammV2Config;
+
+  console.log(`> Using keypair file path ${config.keypairFilePath}`);
+  const keypair = await safeParseKeypairFromFile(config.keypairFilePath);
+
+  console.log('\n> Initializing with general configuration...');
+  console.log(`- Using RPC URL ${config.rpcUrl}`);
+  console.log(`- Dry run = ${config.dryRun}`);
+  console.log(`- Using payer ${keypair.publicKey} to execute commands`);
+
+  const connection = new Connection(config.rpcUrl, DEFAULT_COMMITMENT_LEVEL);
+  const wallet = new Wallet(keypair);
+
+  let baseMint: PublicKey;
+  if (!config.quoteMint) {
+    throw new Error('Missing quoteMint in configuration');
+  }
+  const quoteMint = new PublicKey(config.quoteMint);
+
+  if (config.createBaseToken) {
+    baseMint = await createTokenMint(connection, wallet, {
+      dryRun: config.dryRun,
+      mintTokenAmount: config.createBaseToken.mintBaseTokenAmount,
+      decimals: config.createBaseToken.baseDecimals,
+      computeUnitPriceMicroLamports: config.computeUnitPriceMicroLamports,
+    });
+  } else {
+    if (!config.baseMint) {
+      throw new Error('Missing baseMint in configuration');
+    }
+    baseMint = new PublicKey(config.baseMint);
+  }
+
+  console.log(`- Using base token mint ${baseMint.toString()}`);
+  console.log(`- Using quote token mint ${quoteMint.toString()}`);
+
+  /// --------------------------------------------------------------------------
+  if (config.dammV2Config) {
+    await createDammV2OneSidedPool(config, connection, wallet, baseMint, quoteMint);
+
+    if (config.dammV2Config.hasAlphaVault && config.alphaVault) {
+      console.log('\n> Alpha vault is enabled, creating alpha vault automatically...');
+
+      const poolAddress = deriveCustomizablePoolAddress(baseMint, quoteMint);
+
+      const alphaVaultConfig: AlphaVaultConfig = {
+        ...config,
+        baseMint: baseMint.toString(),
+        quoteMint: quoteMint.toString(),
+      };
+
+      await createAlphaVault(connection, wallet, alphaVaultConfig, poolAddress);
+
+      console.log('\n>>> DAMM V2 pool and alpha vault created successfully! 🎉');
+    }
+  } else {
+    throw new Error('Must provide Dynamic V2 configuration');
+  }
+}
+
+main();

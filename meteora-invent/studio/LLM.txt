@@ -1,0 +1,536 @@
+# LLM.txt - Meteora Studio
+
+**AI-Optimized Guide for Meteora Studio Automation**
+
+## 🎯 Quick AI Context
+
+Meteora Studio is a TypeScript-based automation toolkit for Meteora's Solana DeFi Operations. All scripts use **JSON configuration files**, making them AI-friendly and easily automatable.
+
+### Core Architecture
+- **Config-driven**: All parameters are in `studio/config/*.jsonc` files
+- **CLI-based**: Scripts are executed via `pnpm studio [command]`
+- **Modular**: Each protocol (DBC, DAMM, DLMM) has dedicated scripts
+- **Safe**: Built-in dry-run mode for testing
+
+## 🛠️ Initial Setup & Prerequisites
+
+### Prerequisites
+- **Node.js** >= 18.0.0
+- **pnpm** >= 9.0.0
+- Valid Solana wallet with SOL balance
+- RPC endpoint (recommended: [Helius](https://www.helius.dev/), QuickNode, or similar)
+
+### Installation & Configuration
+
+1. **Install dependencies** (from repository root):
+```bash
+pnpm install
+```
+
+2. **Environment setup**:
+```bash
+# Copy environment template
+cp studio/.env.example studio/.env
+
+# Edit .env file with:
+# PAYER_PRIVATE_KEY=your_wallet_private_key_in_base58_format
+# RPC_URL=your_rpc_endpoint_url_optional_but_recommended
+```
+
+3. **Generate keypair**:
+```bash
+pnpm studio generate-keypair
+```
+
+4. **Configure protocol settings**:
+   - Edit relevant config files in `studio/config/` directory
+   - Use provided examples as starting points
+   - Replace placeholder values with actual addresses/parameters
+
+## 🚀 Available Scripts & Commands
+
+### Environment Setup
+```bash
+# Generate keypair from private key
+pnpm studio generate-keypair
+
+# Start local test validator (for development)
+pnpm studio start-test-validator
+```
+
+### DBC (Dynamic Bonding Curve) - Token Launches
+```bash
+pnpm studio dbc-create-config --config ./studio/config/dbc_config.jsonc      # Create launch configuration
+pnpm studio dbc-create-pool --config ./studio/config/dbc_config.jsonc        # Deploy token with bonding curve
+pnpm studio dbc-swap --config ./studio/config/dbc_config.jsonc               # Buy/sell on bonding curve
+pnpm studio dbc-claim-trading-fee --config ./studio/config/dbc_config.jsonc  # Claim accumulated fees
+pnpm studio dbc-migrate-to-damm-v1 --config ./studio/config/dbc_config.jsonc # Migrate to DAMM V1 pool
+pnpm studio dbc-migrate-to-damm-v2 --config ./studio/config/dbc_config.jsonc # Migrate to DAMM V2 pool
+```
+
+### DAMM V1 (Dynamic AMM V1) - Constant Product AMM
+```bash
+pnpm studio damm-v1-create-pool --config ./studio/config/damm_v1_config.jsonc              # Create CP-AMM pool
+pnpm studio damm-v1-lock-liquidity --config ./studio/config/damm_v1_config.jsonc           # Lock liquidity in pool
+pnpm studio damm-v1-create-stake2earn-farm --config ./studio/config/damm_v1_config.jsonc   # Create yield farming
+pnpm studio damm-v1-lock-liquidity-stake2earn --config ./studio/config/damm_v1_config.jsonc # Lock in yield farm
+```
+
+### DAMM V2 (Dynamic AMM V2) - Enhanced AMM
+```bash
+pnpm studio damm-v2-create-balanced-pool --config ./studio/config/damm_v2_config.jsonc   # Create balanced pool
+pnpm studio damm-v2-create-one-sided-pool --config ./studio/config/damm_v2_config.jsonc  # Create single-asset pool
+```
+
+### DLMM (Dynamic Liquidity Market Maker) - Concentrated Liquidity
+```bash
+pnpm studio dlmm-create-pool --config ./studio/config/dlmm_config.jsonc                # Create DLMM pool
+pnpm studio dlmm-seed-liquidity-lfg --config ./studio/config/dlmm_config.jsonc         # Add liquidity (LFG mode)
+pnpm studio dlmm-seed-liquidity-single-bin --config ./studio/config/dlmm_config.jsonc  # Add liquidity (single bin)
+pnpm studio dlmm-set-pool-status --config ./studio/config/dlmm_config.jsonc           # Manage pool status
+```
+
+### Alpha Vault - Yield Strategies
+```bash
+pnpm studio alpha-vault-create --config ./studio/config/alpha_vault_config.jsonc  # Create yield vault
+```
+
+## 📋 Configuration System
+
+### Configuration Files Location
+All configurations are in `studio/config/`:
+- `dbc_config.jsonc` - Dynamic Bonding Curve settings
+- `damm_v1_config.jsonc` - DAMM V1 pool settings  
+- `damm_v2_config.jsonc` - DAMM V2 pool settings
+- `dlmm_config.jsonc` - DLMM pool settings
+
+### Key Configuration Parameters
+
+#### Universal Settings (all configs)
+```jsonc
+{
+  "rpcUrl": "https://api.devnet.solana.com",  // Network endpoint
+  "dryRun": false,                            // Simulation mode
+  "keypairFilePath": "./keypair.json",        // Wallet file
+  "computeUnitPriceMicroLamports": 100000     // Transaction priority
+}
+```
+
+#### DBC-Specific Settings
+```jsonc
+{
+  "quoteMint": "So11111111111111111111111111111111111111112", // SOL
+  "baseMint": "YOUR_TOKEN_MINT_ADDRESS",
+  "dbcConfigAddress": "CONFIG_PUBKEY_OR_LEAVE_EMPTY",
+  "swapDirection": "Buy", // or "Sell"
+  "swapAmountLamports": "1000000000", // 1 SOL in lamports
+  
+  // Advanced DBC Parameters
+  "buildCurveMode": 0, // 0: Basic | 1: TwoSegments | 2: WithTwoSegments | 3: WithLiquidityWeights
+  "totalTokenSupply": 1000000000, // Total token supply (not in lamports)
+  "migrationOption": 1, // 0: Migrate to DAMM v1 | 1: Migrate to DAMM v2
+  "tokenBaseDecimal": 6, // Token base decimal
+  "tokenQuoteDecimal": 9, // Token quote decimal
+  
+  // Curve Configuration (varies by buildCurveMode)
+  "initialMarketCap": 20, // Starting market cap in quoteMint terms
+  "migrationMarketCap": 600, // Market cap when curve graduates
+  "percentageSupplyOnMigration": 20, // % of supply to migrate (mode 2)
+  "liquidityWeights": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], // Liquidity segments (mode 3)
+  
+  // Vesting Parameters
+  "lockedVestingParam": {
+    "totalLockedVestingAmount": 100000000, // Locked amount (not in lamports)
+    "numberOfVestingPeriod": 24, // Number of vesting periods
+    "cliffUnlockAmount": 100000000, // Cliff unlock amount
+    "totalVestingDuration": 2592000, // Vesting duration (seconds)
+    "cliffDurationFromMigrationTime": 0 // Cliff delay (seconds)
+  },
+  
+  // Fee Configuration
+  "baseFeeParams": {
+    "baseFeeMode": 0, // 0: Linear | 1: Exponential | 2: Rate Limiter
+    "feeSchedulerParam": {
+      "startingFeeBps": 200, // Starting fee (max 9900 bps = 99%)
+      "endingFeeBps": 200, // Ending fee (min 1 bps = 0.01%)
+      "numberOfPeriod": 0, // Number of fee periods
+      "totalDuration": 0 // Total duration (slots or timestamp)
+    }
+  }
+}
+```
+
+#### Pool Creation Settings
+```jsonc
+{
+  "tokenMintA": "TOKEN_A_MINT_ADDRESS",
+  "tokenMintB": "TOKEN_B_MINT_ADDRESS", 
+  "tokenAAmount": "1000000000",  // Amount in smallest unit
+  "tokenBAmount": "1000000000",  // Amount in smallest unit
+  "feeBps": 30                   // 0.3% fee
+}
+```
+
+## 🔧 AI Automation Patterns
+
+### Pattern 1: Token Launch (DBC)
+1. **Configure**: Edit `studio/config/dbc_config.jsonc`
+2. **Create Config**: `pnpm studio dbc-create-config`
+3. **Launch Token**: `pnpm studio dbc-create-pool`
+4. **Monitor**: Check transaction on Solana Explorer
+
+### Pattern 2: AMM Pool Creation (DAMM V2)
+1. **Configure**: Edit `studio/config/damm_v2_config.jsonc`
+2. **Set token mints**: Update `tokenMintA` and `tokenMintB`
+3. **Create Pool**: `pnpm studio damm-v2-create-balanced-pool`
+4. **Verify**: Pool address returned in output
+
+### Pattern 3: Migration Workflow
+1. **DBC Launch**: Create token with bonding curve
+2. **Wait for Completion**: Monitor bonding curve progress
+3. **Configure Migration**: Update config with DBC pool address
+4. **Migrate**: `pnpm studio dbc-migrate-to-damm-v2`
+
+## 🛡️ Safety Features
+
+### Dry Run Mode
+Set `"dryRun": true` in any config file to simulate transactions without execution:
+```jsonc
+{
+  "dryRun": true  // Simulates only, no real transactions
+}
+```
+
+### Network Switching
+Change `rpcUrl` to switch networks:
+```jsonc
+{
+  "rpcUrl": "https://api.mainnet-beta.solana.com",  // Mainnet
+  "rpcUrl": "https://api.devnet.solana.com",        // Devnet  
+  "rpcUrl": "http://localhost:8899"                 // Localnet
+}
+```
+
+## 📊 Output Interpretation
+
+### Successful Transaction Output
+```
+✅ Transaction successful
+📋 Transaction Signature: [SIGNATURE_HASH]
+🏊 Pool Address: [POOL_PUBKEY]
+💰 Token Mint: [TOKEN_MINT_PUBKEY]
+```
+
+### Error Output Patterns
+```
+❌ Error: Insufficient funds
+❌ Error: Invalid mint address
+❌ Error: RPC connection failed
+❌ Error: Configuration validation failed
+```
+
+## 📖 Protocol Details & Understanding
+
+### DBC (Dynamic Bonding Curve)
+**Purpose**: Permissionless token launch protocol with customizable virtual curves
+- Allows creation of new tokens with bonding curve pricing
+- Price increases as more tokens are purchased
+- Automatic migration to AMM when curve completes
+- Built-in fee mechanisms and vesting options
+- Ideal for fair launch mechanics and price discovery
+
+### DAMM V1 (Dynamic AMM V1) 
+**Purpose**: Constant product AMM with lending integration
+- Supports token prices from 0 to infinity
+- LPs earn additional yield through lending sources
+- Traditional swap fees plus lending returns
+- Lower transaction costs
+- Integrated with Dynamic Vaults for yield optimization
+
+### DAMM V2 (Dynamic AMM V2)
+**Purpose**: Enhanced constant product AMM with advanced features
+- SPL and Token 2022 support
+- Optional concentrated liquidity with position NFTs
+- Dynamic fee structure with on-chain fee scheduler
+- Flexible liquidity locks and in-built farming
+- New fee claiming mechanism with token selection
+- **Not** integrated with Dynamic Vaults (unlike V1)
+
+### DLMM (Dynamic Liquidity Market Maker)
+**Purpose**: Concentrated liquidity with dynamic fee optimization
+- Real-time dynamic fees that capitalize on volatility
+- Precise liquidity concentration in specific price ranges
+- Flexible volatility strategy selection
+- Active position management capabilities
+- Maximum capital efficiency for experienced LPs
+
+### Alpha Vault
+**Purpose**: Automated yield strategies and vault management
+- Automated yield optimization strategies
+- Professional vault management
+- Risk-adjusted returns
+- Institutional-grade features
+
+## 🧠 AI Decision Making
+
+### When to Use Which Protocol
+
+**DBC (Dynamic Bonding Curve)**
+- ✅ New token launches
+- ✅ Price discovery phase
+- ✅ Fair launch mechanics
+- ✅ Automated migration to AMM
+- ✅ Need customizable launch parameters
+
+**DAMM V1 (Dynamic AMM V1)**
+- ✅ Standard LP provision with yield
+- ✅ Yield farming integration
+- ✅ Lending protocol compatibility
+- ✅ Lower gas fees
+- ✅ Want vault yield integration
+
+**DAMM V2 (Dynamic AMM V2)**  
+- ✅ Advanced AMM features
+- ✅ Dynamic fees
+- ✅ Enhanced capital efficiency
+- ✅ Professional trading
+- ✅ Token 2022 compatibility
+- ✅ Need position NFTs
+
+**DLMM (Dynamic Liquidity Market Maker)**
+- ✅ Concentrated liquidity
+- ✅ Active position management
+- ✅ Dynamic fee adjustment
+- ✅ Maximum capital efficiency
+- ✅ Volatility-based strategies
+
+## 🔍 Common AI Tasks
+
+### Task: Create and Launch Token
+```bash
+# 1. Edit dbc_config.jsonc with token details
+# 2. Create configuration
+pnpm studio dbc-create-config
+# 3. Launch token
+pnpm studio dbc-create-pool
+```
+
+### Task: Create AMM Pool
+```bash
+# 1. Edit damm_v2_config.jsonc with token pairs
+# 2. Create pool
+pnpm studio damm-v2-create-balanced-pool
+```
+
+### Task: Add Liquidity to DLMM
+```bash
+# 1. Edit dlmm_config.jsonc with position details
+# 2. Seed liquidity
+pnpm studio dlmm-seed-liquidity-lfg
+```
+
+## 🛠️ Troubleshooting & Common Issues
+
+### Pre-Execution Validation
+```bash
+# 1. Validate JSON syntax
+node -e "console.log(JSON.parse(require('fs').readFileSync('./studio/config/dbc_config.jsonc', 'utf8')))"
+
+# 2. Check keypair exists and SOL balance
+pnpm studio generate-keypair
+
+# 3. Test RPC connection
+curl -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","id":1,"method":"getHealth"}' YOUR_RPC_URL
+```
+
+### Common Error Solutions
+
+#### **"Configuration validation failed"**
+- ✅ Check JSON syntax with validator
+- ✅ Ensure all required fields are present
+- ✅ Verify mint addresses are valid base58 strings
+- ✅ Check decimal values are within valid ranges
+
+#### **"Insufficient SOL balance"**
+- ✅ Add SOL to wallet (≥0.1 SOL recommended)
+- ✅ Switch to devnet for testing (free SOL available)
+- ✅ Check `computeUnitPriceMicroLamports` isn't too high
+
+#### **"Transaction simulation failed"**
+- ✅ Verify RPC endpoint is responsive
+- ✅ Check all token mint addresses exist on the network
+- ✅ Ensure wallet has sufficient balance for all tokens
+- ✅ Validate fee parameters are within acceptable ranges
+
+#### **"RPC connection failed"**
+- ✅ Verify RPC URL is correct and accessible
+- ✅ Check for rate limiting (use premium RPC)
+- ✅ Test with public RPC as backup
+- ✅ Ensure network connectivity
+
+#### **"Invalid mint address"**
+- ✅ Verify address is valid base58 string (44 characters)
+- ✅ Check token exists on the correct network
+- ✅ Use token mint address, not token account address
+- ✅ Validate on Solana Explorer
+
+#### **"Pool already exists"**
+- ✅ Check if pool was created in previous run
+- ✅ Use different token pair if intentional
+- ✅ Verify on explorer before re-running
+
+#### **"Keypair file not found"**
+- ✅ Run `pnpm studio generate-keypair` first
+- ✅ Check `keypairFilePath` in config matches actual file
+- ✅ Ensure file has correct permissions
+
+### Network-Specific Issues
+
+#### **Mainnet**
+- Higher transaction costs
+- Real money at risk
+- Rate limits on public RPCs
+- **Always test on devnet first**
+
+#### **Devnet**
+- Free SOL from faucet
+- May have network instability
+- Different program addresses
+- Good for testing
+
+#### **Localnet**
+- Requires local validator running
+- Use for development only
+- Need to load program artifacts
+- **Run `pnpm studio start-test-validator` first**
+
+## 🚨 Critical AI Guidelines
+
+### Required Before Execution
+1. ✅ Validate config file syntax (valid JSONC)
+2. ✅ Confirm keypair.json exists and is valid
+3. ✅ Check wallet SOL balance (≥0.1 SOL recommended)
+4. ✅ Verify RPC endpoint is responsive
+5. ✅ Use dry-run first for new configurations
+6. ✅ Test on devnet before mainnet
+7. ✅ Validate all mint addresses on explorer
+
+### Never Modify These Files
+- `src/` directory contents (core logic)
+- `package.json` (dependencies) 
+- `.gitignore`
+- Any file not in `config/` directory
+- `keypair.json` (generate via script only)
+
+### Always Modify These Files
+- `config/*.jsonc` files for parameters
+- Environment variables via `.env` file
+- Use `generate-keypair` script for wallet setup
+
+## 📈 Advanced Features
+
+### Compute Unit Optimization
+Adjust priority fees in config:
+```jsonc
+{
+  "computeUnitPriceMicroLamports": 100000  // Higher = faster execution
+}
+```
+
+### Multi-Network Support
+Each config supports different networks simultaneously by changing `rpcUrl`.
+
+### Batch Operations
+Multiple scripts can be chained for complex workflows:
+```bash
+pnpm studio dbc-create-config && pnpm studio dbc-create-pool
+```
+
+## 📁 Project Structure & File Locations
+
+### Directory Overview
+```
+studio/
+├── config/                    # Configuration files (AI modifies these)
+│   ├── dbc_config.jsonc      # Dynamic Bonding Curve settings
+│   ├── damm_v1_config.jsonc  # DAMM V1 pool settings
+│   ├── damm_v2_config.jsonc  # DAMM V2 pool settings
+│   └── dlmm_config.jsonc     # DLMM pool settings
+├── src/                      # Source code (AI never modifies)
+│   ├── scripts/              # Executable scripts
+│   │   ├── dbc/             # DBC protocol scripts
+│   │   ├── damm_v1/         # DAMM V1 scripts
+│   │   ├── damm_v2/         # DAMM V2 scripts
+│   │   ├── dlmm/            # DLMM scripts
+│   │   ├── alpha_vault/     # Alpha vault scripts
+│   │   └── settings/        # Utility scripts
+│   ├── lib/                 # Protocol libraries
+│   ├── helpers/             # Helper functions
+│   ├── utils/               # Utility types and constants
+│   └── tests/               # Test artifacts and data
+├── data/                    # Static data files
+├── test-ledger/            # Local validator data
+├── .env                    # Environment variables (create from .env.example)
+├── keypair.json           # Generated wallet file
+├── package.json           # Script definitions
+└── LLM.txt               # This AI guide
+```
+
+### Key Files for AI Operations
+
+#### **Configuration Files** (Always Edit)
+- `config/*.jsonc` - Protocol-specific parameters
+- `.env` - Environment variables (RPC URL, private key)
+
+#### **Generated Files** (Never Edit Directly)
+- `keypair.json` - Auto-generated from private key
+- `dist/` - Compiled output
+- `node_modules/` - Dependencies
+
+#### **Important Executables**
+- `package.json` - Contains all available npm scripts
+- `src/scripts/**/*.ts` - Individual protocol operations
+
+### File Permissions & Safety
+- **Read-only**: Everything in `src/` directory
+- **Configurable**: Everything in `config/` directory
+- **Generated**: `keypair.json`, `dist/`, `node_modules/`
+
+## 🔗 Integration Points
+
+### With Other Tools
+- **Solana Explorer**: Verify transactions (`https://explorer.solana.com/`)
+- **DexScreener**: Monitor pools (`https://dexscreener.com/solana/`)
+- **Jupiter**: Token swaps (`https://jup.ag/`)
+- **Meteora App**: UI management (`https://app.meteora.ag/`)
+
+### API Integration
+All scripts output structured data suitable for:
+- Database storage (JSON format)
+- API responses (structured output)
+- Dashboard integration (real-time data)
+- Monitoring systems (transaction tracking)
+
+### Common Integration Patterns
+```bash
+# Capture output for processing
+OUTPUT=$(pnpm studio dbc-create-pool --config ./studio/config/dbc_config.jsonc 2>&1)
+echo "$OUTPUT" | grep "Pool Address:" | cut -d' ' -f3
+
+# Chain operations
+pnpm studio dbc-create-config --config ./studio/config/dbc_config.jsonc && \
+pnpm studio dbc-create-pool --config ./studio/config/dbc_config.jsonc
+```
+
+---
+
+**🎯 AI Success Checklist**
+- [ ] Config file edited correctly with valid JSON syntax
+- [ ] Dry run executed successfully without errors
+- [ ] Adequate SOL balance confirmed (≥0.1 SOL)
+- [ ] Network matches intention (mainnet/devnet/localnet)
+- [ ] All mint addresses validated on explorer
+- [ ] Script execution monitored for completion
+- [ ] Transaction verified on Solana Explorer
+- [ ] Output addresses/signatures saved for future use
+- [ ] Integration points tested if applicable

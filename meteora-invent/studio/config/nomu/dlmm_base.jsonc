@@ -1,0 +1,20 @@
+{
+	"rpcUrl": "https://devnet.helius-rpc.com/?api-key=18dccc6d-d62d-480f-b652-d30e4b641a5e",
+	"dryRun": false,
+	"keypairFilePath": "./nomu.json",
+	"computeUnitPriceMicroLamports": 100000,
+  
+	"quoteMint": "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",      // remplace par ton mint USDC devnet
+	"baseMint":  "8t5fnyeUJBP3zVcqaHN3vjZZu14xPqdzTNZuNhbv7nHt",     // mint $NOMU
+  
+	"dlmmConfig": {
+	  "binStep": 20,                   // binStep défaut; la position MM/AMB peut surcharger
+	  "feeBps": 30,
+	  "initialPrice": 0.001,           // prix de départ NOMU en USDC
+	  "activationType": 1,
+	  "activationPoint": 1755290116,
+	  "priceRounding": "up",
+	  "creatorPoolOnOffControl": true,
+	  "hasAlphaVault": false
+	}
+  }

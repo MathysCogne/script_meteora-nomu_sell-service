@@ -2,3 +2,6 @@ node_modules
 .env
 meteora-setup/
 meteora-setup/meteora-pool-setup/
+
+keypair.json
+nomu.json

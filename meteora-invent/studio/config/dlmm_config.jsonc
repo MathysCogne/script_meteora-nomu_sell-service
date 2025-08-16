@@ -1,0 +1,134 @@
+{
+  /* rpcUrl is required. You can switch between mainnet, devnet and localnet or use your own RPC URL. */
+  "rpcUrl": "https://devnet.helius-rpc.com/?api-key=18dccc6d-d62d-480f-b652-d30e4b641a5e", // mainnet: https://api.mainnet-beta.solana.com | devnet: https://api.devnet.solana.com | localnet: http://localhost:8899
+
+  // "rpcUrl": "https://solana-devnet.g.alchemy.com/v2/aIRYVHFnTKMuFK9QUo2wC",
+
+  /* dryRun is required. If true, transactions will be simulated and not executed. If false, transactions will be executed. */
+  "dryRun": false,
+
+  /* keypairFilePath is required and will be the payer + signer for all transactions */
+  "keypairFilePath": "./keypair.json",
+
+  /* computeUnitPriceMicroLamports is required and can be adjusted to fit your needs */
+  "computeUnitPriceMicroLamports": 100000,
+
+  /* quoteMint is required for the following actions:
+   * 1. dlmm-create-pool
+   * 2. dlmm-seed-liquidity-lfg
+   * 3. dlmm-seed-liquidity-single-bin
+   * 4. dlmm-set-pool-status
+   * SOL: So11111111111111111111111111111111111111112 | USDC: EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v | any other token address
+   */
+  "quoteMint": "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",
+
+  /* Either use baseMint or createBaseToken, but not both.
+   * baseMint is required for the following actions:
+   * 1. dlmm-create-pool
+   * 2. dlmm-seed-liquidity-lfg
+   * 3. dlmm-seed-liquidity-single-bin
+   * 4. dlmm-set-pool-status
+   */
+  "baseMint": "9tvKN7JLLQmh7J752tBZ5b6faA6zNZ5h8ixaD7DY2tWn",
+  // "createBaseToken": {
+  //     "mintBaseTokenAmount": 1000000000, // total amount of base token to be minted
+  //     "baseDecimals": 6 // decimals of the base token
+  // },
+
+  /* dlmmConfig is only used in the following actions:
+   * 1. dlmm-create-pool
+   */
+  "dlmmConfig": {
+    "binStep": 80, // Price increment/decrement percentage in basis points (400 = 4% price step between bins)
+    "feeBps": 20, // Trading fee in basis points (200 = 2% fee per swap)
+    "initialPrice": 0.001, // Initial price(in terms of quote/base price)
+    "activationType": 1, // 0 - Slot | 1 - Timestamp
+    "activationPoint": 1755370720, // Activation time of the pool depending on activationType (Calculate in slots if activationType is 0 (slots) | Calculate in seconds if activationType is 1 (timestamp))
+    "priceRounding": "up", // Price calculation rounding direction for bin ID conversion
+    "creatorPoolOnOffControl": false, // Pool creator permission to enable/disable trading for permissionless pools
+    "hasAlphaVault": false // If true, the alpha vault will be created after the pool is created
+  },
+
+  /* lfgSeedLiquidity is only used in the following actions:
+   * 1. dlmm-seed-liquidity-lfg
+   * https://ilm.jup.ag/
+   */
+  "lfgSeedLiquidity": {
+    "minPrice": 0.001, // Minimum price boundary for liquidity distribution range
+    "maxPrice": 1.536, // Maximum price boundary for liquidity distribution range
+    "curvature": 0.68, // Distribution curvature factor (1/k) controlling liquidity concentration (0-1, lower = more concentrated)
+    "seedAmount": "19172182", // Total amount of liquidity to seed into the pool (in token units)
+    "operatorKeypairFilepath": "./keypair.json", // File path to operator's private key for signing seeding transactions
+    "positionOwner": "8XW4K4nf8eQtoRYX4EvuCkg6oirCYLsNSTZypGRzXwBi", // Public key of the position owner who controls the liquidity
+    "feeOwner": "8XW4K4nf8eQtoRYX4EvuCkg6oirCYLsNSTZypGRzXwBi", // Public key entitled to claim trading fees from this position
+    "lockReleasePoint": 0, // Timestamp/slot when position becomes withdrawable (0 = immediately unlocked)
+    "seedTokenXToPositionOwner": true // Whether to send 1 lamport of token X to position owner as ownership proof
+  },
+
+  /* singleBinSeedLiquidity is only used in the following actions:
+   * 1. dlmm-seed-liquidity-single-bin
+   */
+  "singleBinSeedLiquidity": {
+
+    "price": 0.005, // Exact price where liquidity will be concentrated in a single bin
+    "priceRounding": "up", // Price calculation rounding direction for bin ID conversion
+    "seedAmount": "10000", // Amount of token X (base token) to seed into the single bin (in token units)
+    "operatorKeypairFilepath": "./keypair.json", // File path to operator's private key for signing seeding transactions
+    "positionOwner": "8XW4K4nf8eQtoRYX4EvuCkg6oirCYLsNSTZypGRzXwBi", // Public key of the position owner who controls the liquidity
+    "feeOwner": "8XW4K4nf8eQtoRYX4EvuCkg6oirCYLsNSTZypGRzXwBi", // Public key entitled to claim trading fees from this position
+    "lockReleasePoint": 0, // Timestamp/slot when position becomes withdrawable (0 = immediately unlocked)
+    "seedTokenXToPositionOwner": true // Whether to send 1 lamport of token X to position owner as ownership proof
+  },
+
+  /* setDlmmPoolStatus is only used in the following actions:
+   * 1. dlmm-set-pool-status
+   */
+  "setDlmmPoolStatus": {
+    "poolAddress": "YOUR_POOL_ADDRESS", // pool address of the dlmm pool
+    "enabled": true // true = enable trading | false = disable trading
+  },
+
+  /* alphaVault is only used in the following actions:
+   * 1. dlmm-create-pool
+   * There are 2 types of alpha vault: First Come First Serve (FCFS) and Prorata.
+   */
+  "alphaVault": {
+    "poolType": "dlmm", // DLMM = dlmm | DAMM v1 = dynamic | DAMM v2 = damm2
+    "alphaVaultType": "fcfs", // FCFS = fcfs | Prorata = prorata
+
+    /* Only use the following parameters for alphaVaultType: fcfs
+     * 1. maxDepositCap
+     * 2. individualDepositingCap
+     */
+    "maxDepositCap": 10000, // Maximum total amount (in quote token) that can be deposited across all users in the vault
+    "individualDepositingCap": 1, // Maximum amount (in quote token) that each individual user can deposit
+
+    /* Only use the following parameters for alphaVaultType: prorata
+     * 1. maxBuyingCap
+     */
+    // "maxBuyingCap": 10000, // Maximum total amount (in quote token) that can be bought across all users in the vault
+
+    "depositingPoint": 1733626299, // When users can start depositing depending on pool's activationType (Calculate in slots if activationType is 0 (slots) | Calculate in seconds if activationType is 1 (timestamp))
+    "startVestingPoint": 1746808201, // When token vesting begins and users can start claiming their vested tokens depending on pool's activationType (Calculate in slots if activationType is 0 (slots) | Calculate in seconds if activationType is 1 (timestamp))
+    "endVestingPoint": 1746808201, // When token vesting ends and all tokens become fully claimable depending on pool's activationType (Calculate in slots if activationType is 0 (slots) | Calculate in seconds if activationType is 1 (timestamp))
+    "escrowFee": 0, // Fee amount (in quote token) charged when creating a stake escrow account
+    "whitelistMode": "permissionless", // Whitelist mode: permissionless | permissioned_with_merkle_proof | permissioned_with_authority
+
+    /* Optional Configuration: whitelistFilePath
+     * Only use when whitelistMode is permissioned_with_merkle_proof or permissioned_with_authority
+     */
+    // "whitelistFilepath": "./data/whitelist_wallet.csv", // Optional path to CSV file containing whitelisted wallet addresses and their deposit caps (format: wallet,deposit_cap)
+
+    /* Optional Configuration: merkleProofBaseUrl, chunkSize, kvProofFilepath, cloudflareKvProofUpload
+     * Only use when whitelistMode is permissioned_with_merkle_proof
+     */
+    "merkleProofBaseUrl": "https://example.workers.dev/", // Base URL endpoint where merkle proofs are stored and can be retrieved for whitelisted wallet verification
+    "chunkSize": 1000, // Optional batch size for processing large whitelist files or merkle tree operations to avoid memory/performance issues
+    "kvProofFilepath": "./data/kv_proofs", // Optional path to key-value file storing pre-computed merkle proofs for whitelisted addresses
+    "cloudflareKvProofUpload": {
+      "kvNamespaceId": "YOUR_KV_NAMESPACE_ID",
+      "accountId": "YOUR_ACCOUNT_ID",
+      "apiKey": "YOUR_API_KEY"
+    }
+  }
+}

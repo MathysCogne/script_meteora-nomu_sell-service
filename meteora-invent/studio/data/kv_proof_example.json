@@ -1,0 +1,20 @@
+{
+  "EXAMPLE_WALLET_ADDRESS_1": {
+    "merkle_tree": "YOUR_MERKLE_TREE_ADDRESS",
+    "amount": 10000000000,
+    "locked_amount": 0,
+    "proof": [[], []]
+  },
+  "EXAMPLE_WALLET_ADDRESS_2": {
+    "merkle_tree": "YOUR_MERKLE_TREE_ADDRESS",
+    "amount": 10000000000,
+    "locked_amount": 0,
+    "proof": [[], []]
+  },
+  "EXAMPLE_WALLET_ADDRESS_3": {
+    "merkle_tree": "YOUR_MERKLE_TREE_ADDRESS",
+    "amount": 10000000000,
+    "locked_amount": 0,
+    "proof": [[], []]
+  }
+}

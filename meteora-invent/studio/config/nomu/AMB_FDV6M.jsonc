@@ -1,0 +1,24 @@
+{
+	"rpcUrl": "https://devnet.helius-rpc.com/?api-key=18dccc6d-d62d-480f-b652-d30e4b641a5e",
+	"dryRun": false,
+	"keypairFilePath": "./nomu.json",
+	"computeUnitPriceMicroLamports": 100000,
+	"quoteMint": "Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr",
+	"baseMint": "8t5fnyeUJBP3zVcqaHN3vjZZu14xPqdzTNZuNhbv7nHt",
+  
+	"dlmmConfig": { "binStep": 16, "feeBps": 30, "initialPrice": 0.001, "activationType": 1, "activationPoint": 0, "priceRounding": "up", "creatorPoolOnOffControl": true, "hasAlphaVault": false },
+  
+	// open_when_twap_gte: (none)
+	"lfgSeedLiquidity": {
+	  "minPrice": 0.001,
+	  "maxPrice": 0.006,
+	  "curvature": 0.6,
+	  "seedAmount": "86100000",
+	  "operatorKeypairFilepath": "./nomu.json",
+	  "positionOwner": "2bS72Qf2nzgbYnTYnQh43ufkgMZxbdxqp4NTaVXkKyUk",
+	  "feeOwner": "2bS72Qf2nzgbYnTYnQh43ufkgMZxbdxqp4NTaVXkKyUk",
+	  "lockReleasePoint": 0,
+	  "seedTokenXToPositionOwner": true
+	}
+  }
+  
